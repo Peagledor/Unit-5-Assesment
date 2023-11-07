@@ -3,6 +3,8 @@ const nameInput = document.querySelector('#name-input')
 const countrySelect = document.querySelector('#country-select')
 const countryList = document.querySelector('#country-list')
 
+
+
 function handleSubmit(e) {
     e.preventDefault()
 
@@ -36,7 +38,7 @@ function deleteCard(id) {
 function getCities() {
     countryList.innerHTML = ''
 
-    axios.get('http://localhost:4004/cities/')
+    axios.get('http://localhost:4004/cities')
         .then(res => {
             res.data.forEach(elem => {
                 let countryCard = `<div class="country-card">

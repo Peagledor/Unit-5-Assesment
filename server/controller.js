@@ -1,4 +1,16 @@
+require("dotenv").config();
+const { CONNECTION_STRING } = process.env;
+const Sequelize = require("sequelize");
 
+
+const sequelize = new Sequelize(CONNECTION_STRING, {
+    dialect: "postgres",
+    dialectOptions: {
+        ssl:{
+            rejectUnauthorized: false
+        }
+    }
+});
 
 module.exports = {
     seed: (req, res) => {
@@ -7,11 +19,16 @@ module.exports = {
             drop table if exists countries;
 
             create table countries (
-                country_id serial primary key, 
+                country_id SERIAL PRIMARY KEY, 
                 name varchar
             );
 
-            *****YOUR CODE HERE*****
+            CREATE TABLE cities(
+                city_id SERIAL PRIMARY KEY,
+                name: varchar,
+                rating: integer,
+                country_id: integer REFERENCES countries
+            );
 
             insert into countries (name)
             values ('Afghanistan'),
@@ -208,10 +225,42 @@ module.exports = {
             ('Vietnam'),
             ('Yemen'),
             ('Zambia'),
-            ('Zimbabwe');
-        `).then(() => {
+            ('Zimbabwe');`)
+            .then(() => {
             console.log('DB seeded!')
             res.sendStatus(200)
         }).catch(err => console.log('error seeding DB', err))
+    },
+    getCountries: (req, res) => {
+        sequelize.query(
+            `${SELECT} * FROM countries;`)
+                .then( dbRes => {
+                    res.status(200).send(dbRes[0])
+        }).catch(err => console.log('error getting countries'))
+    },
+                
+    createCity: (req, res) => {
+        let {
+            name,
+            rating,
+            country_id,
+            } = req.body
+                    
+        sequelize.query(
+            `INSERT INTO cities(name, rating, country_id)
+            VALUES (${name}, ${rating}. ${country_id});`)
+            .then( dbRes => {
+                res.status(200).send(dbRes[0])
+            .catch(err => {
+                console.log('error creating city')})
+        })
+                        
+    },
+
+    getCities: (req, res) => {
+        sequelize.query(
+            `SELECT FROM `
+        )
     }
+    
 }
